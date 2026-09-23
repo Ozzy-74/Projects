@@ -1,0 +1,45 @@
+import {expect, test} from "@playwright/test"
+
+test("Lazy loading scroll",async({page})=>{
+    test.setTimeout(180000);
+    
+    await page.goto("https://www.booksbykilo.in/books?gad_source=1&gad_campaignid=19706481345&gbraid=0AAAAADAZuCbcQOI0FOat8JX76T5OqGXni&gclid=Cj0KCQjwzsjVBhC3ARIsALnMv4k8rpYnXTWD016m-Dv7cf3TnQvuxNXsstCbky7UFtTnrSOL5kuFgzAaAt7JEALw_wcB")
+
+    let previousHeight = 0;
+
+    const bookNames = new Set<String>()
+
+    while(true){
+
+        const names = await page.locator(".category_page h3").allInnerTexts();
+
+    for (const name of names) {
+        if (name.trim()) {
+            bookNames.add(name.trim());
+            console.log(bookNames)
+            
+        }
+    }
+
+        await page.evaluate(()=>{
+            window.scrollTo(0,document.body.scrollHeight)
+        })
+
+        await page.waitForTimeout(1000);
+
+        const currentHeight =  await page.evaluate(()=>{
+            return document.body.scrollHeight
+        })
+
+        if(currentHeight === previousHeight){
+            break;
+        }
+
+        previousHeight = currentHeight;
+    }
+
+    
+
+console.log("REached the end")
+
+})
