@@ -1,0 +1,50 @@
+import { test, expect } from "@playwright/test";
+import fs from 'fs'
+
+//!SCRAPING DATA
+test("Extracting data from table", async({page})=>{
+
+    const filePath = "K://Testleaf-working//data//USERDATA.txt"
+    await page.goto("https://datatables.net/")
+
+    const rowsLocator = page.locator("#myTable tbody tr")
+    const nextBtnLocator = page.getByRole('link',{name:"Next",exact:true})
+
+    let hasNextPage = true;
+
+    while(hasNextPage){
+
+        //wait for table rows to be visible
+        await rowsLocator.first().waitFor({state:'visible'})
+
+        const rows = await rowsLocator.all()
+        let pageData = ""
+
+        for(const row of rows){
+            const cells = await row.locator('td').allTextContents()
+
+            if(cells.length>1){
+                var cellsWithoutFirstColumns = cells.slice(3).join(', ')+'\n'
+                console.log(cellsWithoutFirstColumns)
+                pageData += cellsWithoutFirstColumns + "\n";
+            }
+        }
+
+        fs.appendFileSync(filePath,pageData)
+        
+        //click next button
+        if(await nextBtnLocator.isVisible()){
+                const className = await nextBtnLocator.getAttribute("class")
+
+                if(className?.includes("disabled")){
+                    console.log("***LAST PAGE REACHED***")
+                    hasNextPage=false;
+                }
+                 else{
+                await nextBtnLocator.click();  
+                await page.waitForTimeout(500); 
+            }
+            }
+           
+    }
+})
