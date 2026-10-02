@@ -1,0 +1,3 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","5787","sign up","","2026-10-02","passed","2026-10-02","Demoblaze test","POMtestcases.spec.ts","",""
+"","21960","User login, add a product to cart and verify it","","2026-10-02","passed","2026-10-02","Demoblaze test","POMtestcases.spec.ts","",""
